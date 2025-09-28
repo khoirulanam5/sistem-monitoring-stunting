@@ -5,34 +5,19 @@ class Stok extends CI_Controller {
 
     public function __construct() {
         parent::__construct();
-        $this->load->library('form_validation');
-        $this->load->library('session');
+        $this->load->model(['StokModel', 'DaftarBantuanModel']);
+        isadmin();
     }
 
     public function index() {
         $data['title'] = 'Stok FIFO';
-
-        $this->db->select('tb_stok_fifo.*, tb_daftar_bantuan.*');
-        $this->db->from('tb_stok_fifo');
-        $this->db->join('tb_daftar_bantuan', 'tb_stok_fifo.id_bantuan = tb_daftar_bantuan.id_bantuan');
-        $data['stok'] = $this->db->get()->result();
-
-        $data['jenis'] = $this->db->get('tb_daftar_bantuan')->result();
+        $data['stok'] = $this->StokModel->getAll()->result();
+        $data['jenis'] = $this->DaftarBantuanModel->getAll()->result();
 
         $this->load->view('template/header', $data);
         $this->load->view('template/sidebar', $data);
         $this->load->view('admin/stok/index', $data);
         $this->load->view('template/footer');
-    }
-
-    public function generateId() {
-        $unik = 'SF';
-        $kode = $this->db->query("SELECT MAX(id_stok_fifo) LAST_NO FROM tb_stok_fifo WHERE id_stok_fifo LIKE '".$unik."%'")->row()->LAST_NO;
-        $urutan = (int) substr($kode, 2, 3);
-        $urutan++;
-        $huruf = $unik;
-        $kode = $huruf . sprintf("%03s", $urutan);
-        return $kode;
     }
 
     public function add() {
@@ -48,12 +33,8 @@ class Stok extends CI_Controller {
             $harga = $this->input->post('harga');
             $jml = $this->input->post('jml_stok');
 
-            // Query ke database untuk mengambil nilai anggaran berdasarkan id_bantuan
-            $this->db->select('anggaran'); // Hanya kolom 'anggaran' yang diambil
-            $this->db->from('tb_daftar_bantuan'); // Nama tabel
-            $this->db->where('id_bantuan', $id_bantuan); // Kondisi pencarian
-            $anggaran = $this->db->get()->row()->anggaran;
-
+            // Mengambil nilai anggaran berdasarkan id_bantuan
+            $anggaran = $this->DaftarBantuanModel->getById($id_bantuan)->row()->anggaran;
             $total = $harga * $jml;
 
             if ($anggaran < $total) {
@@ -64,18 +45,17 @@ class Stok extends CI_Controller {
                 $jumlah = $anggaran - $harga * $jml;
 
                 $data = [
-                    'id_stok_fifo' => $this->generateId(),
+                    'id_stok_fifo' => $this->StokModel->generateId(),
                     'id_bantuan' => $id_bantuan,
                     'harga' => $harga,
                     'tgl_masuk' => date('Y-m-d'),
                     'tgl_kadaluarsa' => $this->input->post('tgl_kadaluarsa'),
                     'jml_stok' => $jml
                 ];
-                $this->db->insert('tb_stok_fifo', $data);
+                $this->StokModel->save($data);
 
-                $this->db->set('anggaran', $jumlah);
-                $this->db->where('id_bantuan', $id_bantuan);
-                $this->db->update('tb_daftar_bantuan');
+                // update daftar bantuan
+                $this->DaftarBantuanModel->update($jumlah, $id_bantuan);
 
                 $this->session->set_flashdata("pesan", "<script>Swal.fire({title:'Berhasil', text:'Data Stok FIFO berhasil ditambahkan', icon:'success'})</script>");
                 redirect('admin/stok');
@@ -84,8 +64,8 @@ class Stok extends CI_Controller {
     }
 
     public function delete($id_stok_fifo) {
-        $this->db->where('id_stok_fifo', $id_stok_fifo);
-        $this->db->delete('tb_stok_fifo');
+        $this->StokModel->delete($id_stok_fifo);
+
         $this->session->set_flashdata("pesan", "<script>Swal.fire({title:'Berhasil', text:'Data Stok FIFO berhasil dihapus', icon:'success'})</script>");
         redirect('admin/stok');
     }

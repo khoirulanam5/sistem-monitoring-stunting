@@ -1,6 +1,6 @@
 <div class="container-fluid">
 	<div class="d-sm-flex align-items-center justify-content-between mb-4">
-		<h3 class="h3 mb-0 text-gray-800"><b><?= $title?></b></h3>
+		<h3 class="h3 mb-0 text-gray-800"><b><?= $title ?></b></h3>
 	</div>
 	<button class="btn btn-sm btn-primary mb-3" data-toggle="modal" data-target="#add"><i class="fas fa-plus fa-sm"></i> Tambah</button>
 	<?= $this->session->flashdata('pesan') ?>
@@ -13,11 +13,11 @@
 							<th class="text-center">No.</th>
 							<th class="text-center">ID Stok</th>
 							<th class="text-center">Jenis Bantuan</th>
-                            <th class="text-center">Harga</th>
-                            <th class="text-center">Tanggal Masuk</th>
-                            <th class="text-center">Tanggal Kadaluarsa</th>
-                            <th class="text-center">Update Tanggal Barang Keluar</th>
-                            <th class="text-center">Jumlah Stok</th>
+              <th class="text-center">Harga</th>
+              <th class="text-center">Tanggal Masuk</th>
+              <th class="text-center">Tanggal Kadaluarsa</th>
+              <th class="text-center">Update Tanggal Barang Keluar</th>
+              <th class="text-center">Jumlah Stok</th>
 							<th class="text-center">AKSI</th>
 						</tr>
 					</thead>
@@ -29,19 +29,19 @@
 								<td class="text-center"><?= $no++ ?></td>
 								<td><?= $value->id_stok_fifo ?></td>
 								<td><?= $value->jenis_bantuan ?></td>
-                                <td><?= rp($value->harga) ?></td>
-                                <td><?= do_formal_date($value->tgl_masuk) ?></td>
-                                <td><?= do_formal_date($value->tgl_kadaluarsa) ?></td>
-                                <td>
+                <td><?= rp($value->harga) ?></td>
+                <td><?= do_formal_date($value->tgl_masuk) ?></td>
+                <td><?= do_formal_date($value->tgl_kadaluarsa) ?></td>
+                <td>
 									<?php if($value->tgl_keluar == NULL): ?>
 										<span>Barang belum keluar</span>
 									<?php elseif($value->tgl_keluar): ?>
 										<?= do_formal_date($value->tgl_keluar) ?>
 									<?php endif; ?>
 								</td>
-                                <td><?= $value->jml_stok ?></td>
+                <td><?= $value->jml_stok ?></td>
 								<td>
-                                    <a class="btn btn-danger btn-sm m-1 hapus" href="<?= base_url('admin/stok/delete/'.$value->id_stok_fifo) ?>"><i class="fas fa-trash"></i></a>
+                <a class="btn btn-danger btn-sm m-1 hapus" href="<?= base_url('admin/stok/delete/'.$value->id_stok_fifo) ?>"><i class="fas fa-trash"></i></a>
 								</td>
 							</tr>
 						<?php endforeach; ?>

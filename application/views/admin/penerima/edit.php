@@ -29,8 +29,6 @@
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <label>Nama Lengkap</label>
-                                                <input type="hidden" name="id_penerima" value="<?= $value->id_penerima ?>">
-                                                <input type="hidden" name="id_user" value="<?= $value->id_user ?>">
                                                 <input type="text" name="nama" id="nama" class="form-control" value="<?= $value->nama ?>" required>
                                                 <?= form_error('nama', '<div class="text-danger small ml-3">', '</div>'); ?>
                                             </div>

@@ -1,6 +1,6 @@
 <div class="container-fluid">
 	<div class="d-sm-flex align-items-center justify-content-between mb-4">
-		<h3 class="h3 mb-0 text-gray-800"><b><?= $title?></b></h3>
+		<h3 class="h3 mb-0 text-gray-800"><b><?= $title ?></b></h3>
 	</div>
 	<button class="btn btn-sm btn-primary mb-3" data-toggle="modal" data-target="#add"><i class="fas fa-plus fa-sm"></i> Tambah</button>
 	<?= $this->session->flashdata('pesan') ?>
@@ -13,8 +13,8 @@
 							<th class="text-center">No.</th>
 							<th class="text-center">ID Daftar Bantuan</th>
 							<th class="text-center">Nama Bantuan</th>
-                            <th class="text-center">Jenis Bantuan</th>
-                            <th class="text-center">Jumlah Anggaran</th>
+              <th class="text-center">Jenis Bantuan</th>
+              <th class="text-center">Jumlah Anggaran</th>
 							<th class="text-center">AKSI</th>
 						</tr>
 					</thead>
@@ -26,11 +26,11 @@
 								<td class="text-center"><?= $no++ ?></td>
 								<td><?= $value->id_bantuan ?></td>
 								<td><?= $value->nm_bantuan ?></td>
-                                <td><?= $value->jenis_bantuan ?></td>
-                                <td><?= rp($value->anggaran) ?></td>
+                <td><?= $value->jenis_bantuan ?></td>
+                <td><?= rp($value->anggaran) ?></td>
 								<td>
-                                    <button class="btn btn-sm btn-primary m-1" data-toggle="modal" data-target="#edit<?= $value->id_bantuan ?>"><i class="fas fa-edit fa-sm"></i></button>
-                                    <a class="btn btn-danger btn-sm m-1 hapus" href="<?= base_url('pimpinan/daftar_bantuan/delete/'.$value->id_bantuan) ?>"><i class="fas fa-trash"></i></a>
+                <button class="btn btn-sm btn-primary m-1" data-toggle="modal" data-target="#edit<?= $value->id_bantuan ?>"><i class="fas fa-edit fa-sm"></i></button>
+                <a class="btn btn-danger btn-sm m-1 hapus" href="<?= base_url('pimpinan/daftar_bantuan/delete/'.$value->id_bantuan) ?>"><i class="fas fa-trash"></i></a>
 								</td>
 							</tr>
 						<?php endforeach; ?>
@@ -85,10 +85,9 @@
         </button>
       </div>
       <div class="modal-body">
-        <form action="<?= base_url('pimpinan/daftar_bantuan/edit/'.$value->id_bantuan) ?>" method="post" enctype="multipart/form-data">
+        <form action="<?= base_url('pimpinan/daftar_bantuan/edit/' . $value->id_bantuan) ?>" method="post" enctype="multipart/form-data">
                 <div class="form-group">
                     <label>Nama Bantuan</label>
-                    <input type="hidden" name="id_bantuan" value="<?= $value->id_bantuan ?>">
                     <input type="text" name="nm_bantuan" id="nm_bantuan" class="form-control" value="<?= $value->nm_bantuan ?>" required>
                 </div>
                 <div class="form-group">

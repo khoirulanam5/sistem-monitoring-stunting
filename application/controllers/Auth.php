@@ -2,14 +2,13 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Auth extends CI_Controller {
+
     public function __construct() {
         parent::__construct();
-        $this->load->library('form_validation');
-        $this->load->library('session');
+        $this->load->model(['UserModel', 'PenerimaModel', 'StuntingModel']);
     }
 
     public function index() {
-        
         $this->load->view('auth/login');
     }
 
@@ -23,7 +22,7 @@ class Auth extends CI_Controller {
             $username = $this->input->post('username');
             $password = $this->input->post('password');
 
-            $cek = $this->db->get_where("tb_user", array("username" => $username, "password" => $password))->row();
+            $cek = $this->db->get_where("tb_user", ["username" => $username, "password" => $password])->row();
 
                 if(!empty($cek)) {
                     $ses = [
@@ -33,7 +32,6 @@ class Auth extends CI_Controller {
                         'password' => $cek->password,
                         'level' => $cek->level
                     ];
-                    
                     $this->session->set_userdata($ses);
 
                     $penerima = $this->db->get_where('tb_penerima', ['id_user' => $cek->id_user, 'verify' => 'Terverifikasi'])->row();
@@ -44,7 +42,6 @@ class Auth extends CI_Controller {
                     }
 
                     if ($penerima) {
-                        // Simpan data pegawai dalam session
                         $pen = [
                             'id_penerima' => $penerima->id_penerima,
                             'nama'    => $penerima->nama,
@@ -54,7 +51,6 @@ class Auth extends CI_Controller {
                             'jenis_pekerjaan' => $penerima->jenis_pekerjaan,
                             'status_penerima'     => $penerima->status_penerima
                         ];
-
                         $this->session->set_userdata($pen);
                     }
 
@@ -78,36 +74,6 @@ class Auth extends CI_Controller {
         }   
     }
 
-    public function generateIdUser() {
-        $unik = 'U';
-        $kode = $this->db->query("SELECT MAX(id_user) LAST_NO FROM tb_user WHERE id_user LIKE '".$unik."%'")->row()->LAST_NO;
-        $urutan = (int) substr($kode, 1, 3);
-        $urutan++;
-        $huruf = $unik;
-        $kode = $huruf . sprintf("%03s", $urutan);
-        return $kode;
-      }
-
-      public function generateIdPenerima() {
-        $unik = 'P';
-        $kode = $this->db->query("SELECT MAX(id_penerima) LAST_NO FROM tb_penerima WHERE id_penerima LIKE '".$unik."%'")->row()->LAST_NO;
-        $urutan = (int) substr($kode, 1, 3);
-        $urutan++;
-        $huruf = $unik;
-        $kode = $huruf . sprintf("%03s", $urutan);
-        return $kode;
-      }
-
-      public function generateIdStunting() {
-        $unik = 'S';
-        $kode = $this->db->query("SELECT MAX(id_stunting) LAST_NO FROM tb_stunting WHERE id_stunting LIKE '".$unik."%'")->row()->LAST_NO;
-        $urutan = (int) substr($kode, 1, 3);
-        $urutan++;
-        $huruf = $unik;
-        $kode = $huruf . sprintf("%03s", $urutan);
-        return $kode;
-      }
-
     public function register() {
         $this->form_validation->set_rules('nama', 'Nama Lengkap', 'required');
         $this->form_validation->set_rules('nm_pengguna', 'Nama Panggilan', 'required');
@@ -129,36 +95,34 @@ class Auth extends CI_Controller {
         if ($this->form_validation->run() == FALSE) {
             $this->load->view('auth/registrasi');
         } else {
-            $user = [
-                'id_user' => $this->generateIdUser(),
+            $data = [
+                'id_user' => $this->UserModel->generateId(),
                 'nm_pengguna' => $this->input->post('nm_pengguna'),
                 'username' => $this->input->post('username'),
                 'password' => $this->input->post('password'),
                 'level' => 'PENERIMA'
             ];
+            $this->UserModel->save($data);
+            $id_user = $data['id_user'];
 
-            $this->db->insert('tb_user', $user);
-
-            $id_user = $user['id_user'];
-
-                        // Konfigurasi upload
-                        $config['allowed_types'] = 'gif|jpg|png|jpeg|pdf';
-                        $config['max_size'] = '2048';
-                        $config['upload_path'] = './assets/images/';
-                        $this->load->library('upload', $config);
-                        $this->upload->do_upload('ktp');
-                        $ktp = $this->upload->data('file_name');
+            // Konfigurasi upload
+            $config['allowed_types'] = 'gif|jpg|png|jpeg|pdf';
+            $config['max_size'] = '2048';
+            $config['upload_path'] = './assets/images/';
+            $this->load->library('upload', $config);
+            $this->upload->do_upload('ktp');
+            $ktp = $this->upload->data('file_name');
             
-                        // Konfigurasi upload
-                        $config['allowed_types'] = 'gif|jpg|png|jpeg';
-                        $config['max_size'] = '2048';
-                        $config['upload_path'] = './assets/images/';
-                        $this->load->library('upload', $config);
-                        $this->upload->do_upload('kk');
-                        $kk = $this->upload->data('file_name');
+            // Konfigurasi upload
+            $config['allowed_types'] = 'gif|jpg|png|jpeg';
+            $config['max_size'] = '2048';
+            $config['upload_path'] = './assets/images/';
+            $this->load->library('upload', $config);
+            $this->upload->do_upload('kk');
+            $kk = $this->upload->data('file_name');
 
             $penerima = [
-                'id_penerima' => $this->generateIdPenerima(),
+                'id_penerima' => $this->PenerimaModel->generateId(),
                 'id_user' => $id_user,
                 'nama' => $this->input->post('nama'),
                 'umur' => $this->input->post('umur'),
@@ -170,13 +134,11 @@ class Auth extends CI_Controller {
                 'status_penerima' => $this->input->post('status_penerima'),
                 'verify' => 'Verifikasi'
             ];
-
-            $this->db->insert('tb_penerima', $penerima);
-
+            $this->PenerimaModel->save($penerima);
             $id_penerima = $penerima['id_penerima'];
 
             $stunting = [
-                'id_stunting' => $this->generateIdStunting(),
+                'id_stunting' => $this->StuntingModel->generateId(),
                 'id_penerima' => $id_penerima,
                 'nm_balita' => $this->input->post('nm_balita'),
                 'umur_balita' => $this->input->post('umur_balita'),
@@ -186,8 +148,7 @@ class Auth extends CI_Controller {
                 'status_stunting' => $this->input->post('status_stunting'),
                 'tgl_pendataan' => $this->input->post('tgl_pendataan')
             ];
-
-            $this->db->insert('tb_stunting', $stunting);
+            $this->StuntingModel->save($stunting);
 
             $this->session->set_flashdata("pesan", "<script>Swal.fire({title:'Berhasil', text:'Tunggu admin untuk memverifikasi akun anda', icon:'success'})</script>");
             redirect('auth');

@@ -67,8 +67,10 @@
 	    		<tr>
 	    			<td>Status</td>
 	    			<td><strong>:
-						<?php if($value->status_pengiriman == 'Dikirim'): ?>
+						<?php if($value->status_pengiriman == 'Dikirim' && $this->session->userdata('level') === 'PENERIMA'): ?>
 							<a class="badge badge-primary konfirmasi" href="<?= base_url('penerima/distribusi/konfirmasi/' . $value->id_pengiriman) ?>">Konfirmasi Bantuan Telah Diterima</a>
+						<?php elseif($value->status_pengiriman == 'Dikirim' && $this->session->userdata('level') === 'ADMIN'): ?>
+							<a class="badge badge-warning">Dalam Proses Pengiriman</a>
 						<?php elseif($value->status_pengiriman == 'Diterima'): ?>
 							<a class="badge badge-success">Bantuan diterima</a>
 						<?php endif; ?>

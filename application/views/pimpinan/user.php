@@ -1,6 +1,6 @@
 <div class="container-fluid">
 	<div class="d-sm-flex align-items-center justify-content-between mb-4">
-		<h3 class="h3 mb-0 text-gray-800"><b><?= $title?></b></h3>
+		<h3 class="h3 mb-0 text-gray-800"><b><?= $title ?></b></h3>
 	</div>
 	<button class="btn btn-sm btn-primary mb-3" data-toggle="modal" data-target="#add"><i class="fas fa-plus fa-sm"></i> Tambah</button>
 	<?= $this->session->flashdata('pesan') ?>
@@ -13,8 +13,8 @@
 							<th class="text-center">No.</th>
 							<th class="text-center">ID User</th>
 							<th class="text-center">Nama</th>
-                            <th class="text-center">Username</th>
-                            <th class="text-center">Jabatan</th>
+              <th class="text-center">Username</th>
+              <th class="text-center">Jabatan</th>
 							<th class="text-center">AKSI</th>
 						</tr>
 					</thead>
@@ -26,11 +26,11 @@
 								<td class="text-center"><?= $no++ ?></td>
 								<td><?= $value->id_user ?></td>
 								<td><?= $value->nm_pengguna ?></td>
-                                <td><?= $value->username ?></td>
-                                <td><?= $value->level ?></td>
+                <td><?= $value->username ?></td>
+                <td><?= $value->level ?></td>
 								<td>
-                                    <button class="btn btn-sm btn-primary m-1" data-toggle="modal" data-target="#edit<?= $value->id_user ?>"><i class="fas fa-edit fa-sm"></i></button>
-                                    <a class="btn btn-danger btn-sm m-1 hapus" href="<?= base_url('pimpinan/user/delete/'.$value->id_user) ?>"><i class="fas fa-trash"></i></a>
+                <button class="btn btn-sm btn-primary m-1" data-toggle="modal" data-target="#edit<?= $value->id_user ?>"><i class="fas fa-edit fa-sm"></i></button>
+                <a class="btn btn-danger btn-sm m-1 hapus" href="<?= base_url('pimpinan/user/delete/'.$value->id_user) ?>"><i class="fas fa-trash"></i></a>
 								</td>
 							</tr>
 						<?php endforeach; ?>
@@ -67,11 +67,11 @@
             <div class="form-group">
         		<label>Jabatan</label>
         		<select class="form-control" name="level" id="level" required>
-                    <option value="">-- Pilih Jabatan --</option>
-                    <option value="PIMPINAN">PIMPINAN</option>
-                    <option value="ADMIN">ADMIN</option>
-                    <option value="PETUGAS">PETUGAS</option>
-                </select>
+              <option value="">-- Pilih Jabatan --</option>
+              <option value="PIMPINAN">PIMPINAN</option>
+              <option value="ADMIN">ADMIN</option>
+              <option value="PETUGAS">PETUGAS</option>
+            </select>
         	</div>
       </div>
       <div class="modal-footer">
@@ -97,7 +97,6 @@
         <form action="<?= base_url('pimpinan/user/edit/'.$value->id_user) ?>" method="post" enctype="multipart/form_data">
                 <div class="form-group">
                     <label>Nama</label>
-                    <input type="hidden" name="id_user" value="<?= $value->id_user ?>">
                     <input type="text" name="nm_pengguna" id="nm_pengguna" class="form-control" value="<?= $value->nm_pengguna ?>" required>
                 </div>
                 <div class="form-group">
