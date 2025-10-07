@@ -33,4 +33,4 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 
 # screat file
 application/config/api.php
-db_stunting.sql
+*.sql
